@@ -1,0 +1,22 @@
+class Solution:
+
+    @staticmethod
+    def number_from_list(l):
+        v = ''
+        while l != None:
+            v += str(l.val)
+            l = l.next
+        return int(''.join(reversed(v)))
+    
+    @staticmethod
+    def number_to_list(v):
+        s = str(v)
+        l = ListNode(int(s[0]))
+        for i in range(1, len(s)):
+            l = ListNode(int(s[i]), l)
+        return l
+    
+    def addTwoNumbers(self, l1, l2):
+        v1 = self.number_from_list(l1)
+        v2 = self.number_from_list(l2)
+        return self.number_to_list(v1 + v2)
