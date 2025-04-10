@@ -1,0 +1,36 @@
+class Solution:
+    def numberOfPowerfulInt(self, start, finish, limit, s):
+        def count(val):
+            val_str = str(val)
+            suffix_len = len(s)
+            n = len(val_str)
+
+            if n < suffix_len:
+                return 0  # Not enough digits to match the suffix
+
+            prefix_len = n - suffix_len
+            suffix = val_str[-suffix_len:]
+
+            # If suffix of val is less than s, we should not count it when tight
+            tight_suffix_valid = int(suffix >= s) if suffix_len > 0 else 1
+
+            # dp[i][tight]: number of valid prefix digits from position i with tight bound
+            dp = [[0] * 2 for _ in range(prefix_len + 1)]
+            dp[prefix_len][0] = 1
+            dp[prefix_len][1] = tight_suffix_valid
+
+            for i in range(prefix_len - 1, -1, -1):
+                curr_digit = int(val_str[i])
+
+                # Not tight: can use any digit 0..limit
+                dp[i][0] = (limit + 1) * dp[i + 1][0]
+
+                # Tight: must respect the current digit
+                if curr_digit <= limit:
+                    dp[i][1] = curr_digit * dp[i + 1][0] + dp[i + 1][1]
+                else:
+                    dp[i][1] = (limit + 1) * dp[i + 1][0]
+
+            return dp[0][1]
+
+        return count(finish) - count(start - 1)
